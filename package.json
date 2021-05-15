@@ -1,0 +1,36 @@
+{
+  "name": "multiverse-podcasts",
+  "version": "0.1.0",
+  "description": "Multiverse internal podcast feeds",
+  "main": "index.js",
+  "scripts": {
+    "prod": "NODE_ENV=production BASE_URL=https://podcasts.multiverse-coaches.io node index.js",
+    "dev": "NODE_ENV=dev nodemon index.js",
+    "debug": "NODE_ENV=dev node --inspect index.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "podcasts",
+    "RSS"
+  ],
+  "author": "bmordan",
+  "license": "ISC",
+  "dependencies": {
+    "check-disk-space": "^2.1.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "express-session-mariadb-store": "^0.1.1",
+    "feed": "^4.2.2",
+    "google-auth-library": "^7.0.4",
+    "googleapis": "^73.0.0",
+    "mariadb": "^2.5.3",
+    "multer": "^1.4.2",
+    "node-fetch": "^2.6.1",
+    "pug": "^3.0.2",
+    "sequelize": "^6.6.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7",
+    "sqlite3": "^5.0.2"
+  }
+}

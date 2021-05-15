@@ -1,0 +1,10 @@
+public/uploads/audio
+public/uploads/image
+public/uploads/feeds
+*.sqlite
+Dockerfile
+.vscode
+README.md
+package-lock.json
+.gitignore
+node_modules

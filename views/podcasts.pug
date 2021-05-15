@@ -1,0 +1,41 @@
+extends layout.pug
+include podcast_card.pug
+
+block content
+    .container.my-4
+        section#podcasts
+            if podcasts.length
+                .row
+                    each podcast in podcasts
+                        +podcast(podcast)
+            else 
+                p No podcasts have been created yet.
+        section.mb-3
+            button.btn.btn-primary(type="button" data-toggle="collapse" data-target="#add-podcast-component" aria-expanded="false" aria-controls="add-podcast-component") Add Podcast 
+        #add-podcast-component.collapse
+            .row 
+                .col-sm-12.col-md-8
+                    section 
+                        form.card.card-body(onsubmit="onSubmit(this);return false;")
+                            h2 Create a Multiverse Podcast
+                            .mb-3
+                                label.form-label(for="podcast-title") Your podcast title
+                                input#podcast-title.form-control(aria-describeby="podcast-title-help" name="title" required oninput="onTitle(event)")
+                                #podcast-title-help.form-text This will be the name of your Podcast. You will publish episodes under this podcast title.
+                            .mb-3
+                                label.form-label(for="podcast-description") Describe your podcast this is an broad summary of the subject of your podcasts
+                                textarea#podcast-description.form-control(aria-describeby="podcast-description-help" name="description" required style="resize:none;" oninput="onDescription(event)")
+                                #podcast-description-help.form-text This will be the name of your Podcast. Your Podcast will have episodes.
+                            .mb-3
+                                label.form-label(for="podcast-packshot") Packshot for your podcast.
+                                input#podcast-packshot.form-control-file(aria-describeby="podcast-image-help" name="image" type="file" onchange="onImage(event)" required accept="image/*")
+                                #podcast-image-help.form-text Upload your Podcast image 3000 x 3000 (appears in podcast apps as your packshot)
+                            .mb-3
+                                button.btn.btn-primary Create
+                .col-sm-12.col-md-4 
+                    #preview.card
+                        img.card-img-top(alt="podcast packshot" src="/images/Multiverse_Notations_RGB_Navy-22.svg")
+                        .card-body
+                            h5.card-title Your new podcast 
+                            p.card-text Describe your podcast. This will appear in listeners podcast apps.
+    script(src="/js/podcasts.js")

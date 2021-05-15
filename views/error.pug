@@ -1,0 +1,10 @@
+extends layout.pug
+
+block content
+    .container.mt-4
+        .card
+            h1.card-header Error
+            .card-body
+                .card-title=error.type || 'Unknown error'
+                .card-text=error.message
+                a(href='/').btn.btn-primary.mt-4 Go Back

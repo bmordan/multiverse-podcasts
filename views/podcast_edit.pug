@@ -1,0 +1,12 @@
+extends layout.pug
+
+block content
+    .container.mt-3
+        include podcast_edit_podcast.pug
+    .container 
+        .row
+            if podcast.Episodes.length 
+                .col-sm-12.col-md-8
+                    each episode in podcast.Episodes.reverse()
+                        include podcast_edit_episode.pug
+    script(src="/js/podcasts.js")

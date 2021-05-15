@@ -1,0 +1,13 @@
+extends layout.pug
+
+block content
+    .container.mb-4.login
+        .jumbotron.mt-4.d-flex.align-items-center.justify-content-end.bg-primary.position-relative
+            img(src='/images/mv-hero.svg' alt='Multiverse logo')
+            h1.display-4.d-none.d-sm-block.ml-2.text-light Podcasts
+        p.lead
+            | "Asynchronous information and news from the Multiverse"
+        hr.my-4
+        p
+            | Keep up with news and announcements from your teams across the Multiverse from within your Favourite podcasting app. Manually add our company RSS feeds for your chosen podcast and never miss an episode.
+        .g-signin2.mt-4(data-onsuccess="onSignIn")

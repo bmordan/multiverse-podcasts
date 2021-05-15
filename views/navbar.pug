@@ -1,0 +1,19 @@
+nav.navbar.navbar-expand-lg.navbar-light.bg-light
+  a.navbar-brand(href='/')
+    img(src='/images/Multiverse_Symbol_RGB_Navy.svg' alt='Multiverse Podcasts' width='60')
+  button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+    span.navbar-toggler-icon
+  #navbarSupportedContent.collapse.navbar-collapse
+    ul.navbar-nav.mr-auto
+      li.nav-item.active
+        a.nav-link(href='/podcasts')
+          | Podcasts 
+          span.sr-only (current)
+      li.nav-item
+        a.nav-link(href='/publish') Publish
+      li.nav-item
+        a.nav-link(href='/help') Help
+    .form-inline.my-2.my-lg-0
+      .pill.text-muted.mr-2 v#{version}
+      if user && user.name
+        button#signOut.btn.btn-outline-primary.my-2.my-sm-0 Signout

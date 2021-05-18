@@ -1,3 +1,6 @@
+.jumbotron {
+    padding: 2rem;
+}
 .jumbotron img {
     position: absolute;
     bottom:0;
@@ -24,18 +27,6 @@ a.card:hover {
 .podcast .jumbotron img {
     width: 6rem;
     left:0;
-}
-.podcast .jumbotron .icon {
-    position: absolute;
-    bottom: 1rem;
-    right: 1rem
-}
-.icon {
-    background-color: #FF7C66;
-    color: white;
-    border-radius: 50%;
-    padding: .25rem;
-    box-shadow: 0px .5px 1px 0px rgba(0,0,0,0.4);
 }
 .btn-no-style {
     border:solid 0px;

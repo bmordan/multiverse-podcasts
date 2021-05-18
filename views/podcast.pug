@@ -3,10 +3,15 @@ include podcast_card.pug
 
 block content
     .container.mb-4.podcast
-        .jumbotron.mt-4.d-flex.align-items-baseline.justify-content-end.bg-primary.position-relative.card-image(style=`background-image:url('${podcast.image}');`)
+        .jumbotron.mt-4.d-flex.align-items-end.justify-content-end.bg-primary.position-relative.card-image(style=`background-image:url('${podcast.image}');`)
             img(src='/images/mv-hero.svg' alt=podcast.title)
-            a(href=`/podcasts/${podcast.id}/edit`)
-                span.material-icons.icon mode
+            nav
+                a(href="/podcasts")
+                    button.btn.btn-secondary Back
+                a.ml-2(href=`/podcasts/${podcast.id}/edit`)
+                    button.btn.btn-primary Edit Podcast
+                button#publish.btn.btn-success.ml-2(type="button" onclick=`publish("${podcast.id}");` disabled) Publish
+                button.btn.btn-warning.ml-2 Copy RSS feed
         p.lead=podcast.title
         hr.mt-4
         p=podcast.description
@@ -16,24 +21,27 @@ block content
                     include episode.pug
         section.my-3.d-flex
             button.btn.btn-primary(type="button" data-toggle="collapse" data-target="#add-episode-component" aria-expanded="false" aria-controls="add-episode-component") Add Episode
-            a.ml-2(href="/podcasts")
-                button.btn.btn-outline-secondary Back
-            button#publish.btn.btn-success.ml-2(type="button" onclick=`publish("${podcast.id}");` disabled) Publish
+            a.ml-2(href=`/podcasts/${podcast.id}/edit`)
+                button.btn.btn-light Edit episodes
         #add-episode-component.collapse
             .row
                 .col-sm-12.col-md-8
                     section
-                        form.card.card-body(onsubmit="event.preventDefault();onSubmit(this);return false;")
+                        form.card.card-body(onsubmit="event.preventDefault();onEpisodeSubmit(this);return false;")
                             input(type="hidden" value=podcast.id name="podcast_id")
                             h2 Upload an episode
                             .mb-3
                                 label.form-label(for="episode-title") Episode title
-                                input#episode-title.form-control(aria-describeby="episode-title-help" name="title" required oninput="onTitle(event)")
+                                input#episode-title.form-control(aria-describeby="episode-title-help" name="title" required oninput="onEpisodeTitle(event)")
                                 #episode-title-help.form-text This will be the name of your episode.
                             .mb-3
-                                label.form-label(for="episode-description") Describe your podcast this is an broad summary of the subject of your podcasts
-                                textarea#episode-description.form-control(aria-describeby="episode-description-help" name="description" required style="resize:none;" oninput="onDescription(event)")
-                                #episode-description-help.form-text This will be the show notes and description for your episode. Include links and other information about the episode here.
+                                label.form-label(for="episode-description") Short strap line for your podcast episode.
+                                textarea#episode-description.form-control(aria-describeby="episode-description-help" name="description" required style="resize:none;" oninput="onEpisodeDescription(event)")
+                                #episode-description-help.form-text This will be the short description for your episode. It will appear with your podcast cover image in lists.
+                            .mb-3
+                                label.form-label(for="episode-content") Show notes
+                                textarea#episode-content.form-control(aria-describeby="episode-content-help" name="content" style="resize:none;")
+                                #episode-content-help.form-text This will be the show notes and description for your episode. Include links and other information about the episode here.
                             .mb-3
                                 label.form-label(for="podcast-audio-file") Audio file of your podcast.
                                 input#podcast-audio-file.form-control-file(aria-describeby="podcast-audio-file-help" name="audio" type="file" required accept="audio/mp3,audio/wav,audio/acc;capture=microphone")
@@ -46,4 +54,5 @@ block content
                         .card-body
                             h5.card-title Your latest episode 
                             p.card-text Describe your podcast. This will appear in listeners podcast apps.
-    script(src="/js/episodes.js")
+                            p#card-content
+    script(src="/js/podcasts.js")

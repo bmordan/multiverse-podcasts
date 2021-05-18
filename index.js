@@ -184,7 +184,7 @@ app.post('/podcasts/:id/episodes', [protect, uploads.single('audio')], async (re
         title: req.body.title,
         description: req.body.description,
         link: `${BASE_URL}/uploads/audio/${req.file.filename}`,
-        content: req.body.description,
+        content: req.body.content,
         audio: [req.file.filename, req.file.size, req.file.mimetype].join("|")
     })
 
@@ -210,12 +210,15 @@ app.post('/podcasts/:podcast_id/episodes/:id/edit', [protect, uploads.single('au
 
 app.get('/podcasts/:id/delete', protect, async (req, res) => {
     const podcast = await Podcast.findByPk(req.params.id)
-    await podcast.destroy()
     const feedFileName = podcast.title.split(' ').join('-').toLowerCase()
-    fs.unlinkSync(path.join(__dirname, 'public', 'uploads', 'feeds', `${feedFileName}.rss`))
-    fs.unlinkSync(path.join(__dirname, 'public', 'uploads', 'feeds', `${feedFileName}.atom`))
-    fs.unlinkSync(path.join(__dirname, 'public', 'uploads', 'feeds', `${feedFileName}.json`))
-    res.sendStatus(204)    
+    await podcast.destroy()
+    try {
+        fs.unlinkSync(path.join(__dirname, 'public', 'uploads', 'feeds', `${feedFileName}.rss`))
+        fs.unlinkSync(path.join(__dirname, 'public', 'uploads', 'feeds', `${feedFileName}.atom`))
+        fs.unlinkSync(path.join(__dirname, 'public', 'uploads', 'feeds', `${feedFileName}.json`))
+    } finally {
+        res.sendStatus(204)    
+    }
 })
 
 app.get('/episodes/:id/delete', protect, async (req, res) => {

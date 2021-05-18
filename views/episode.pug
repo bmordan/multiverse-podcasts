@@ -1,7 +1,8 @@
-li.list-group-item.flex-column.align-items-start.episode
-    .d-flex.w-100.justify-content-between 
+li.list-group-item.d-flex.align-items-center.episode
+    article.flex-fill
         h5.mb-1=episode.title
-    p.mb-1=episode.description 
-    small=episode.createdAt
-    br
-    small=episode.link
+        p.mb-1=episode.description
+        button.btn.btn-link(type="button" onclick=`toggleShowNotes("#${episode.id}-show-notes")` role="button" aria-expanded="false" aria-controls=`${episode.id}-show-notes`) show notes
+        .collapse.bg-light.p-2(id=`${episode.id}-show-notes`)!=episode.content
+    audio.ml-3(controls)
+        source(src=episode.link type="audio/mpeg")

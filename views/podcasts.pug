@@ -16,19 +16,19 @@ block content
             .row 
                 .col-sm-12.col-md-8
                     section 
-                        form.card.card-body(onsubmit="onSubmit(this);return false;")
+                        form.card.card-body(onsubmit="onPodcastSubmit(this);return false;")
                             h2 Create a Multiverse Podcast
                             .mb-3
                                 label.form-label(for="podcast-title") Your podcast title
-                                input#podcast-title.form-control(aria-describeby="podcast-title-help" name="title" required oninput="onTitle(event)")
+                                input#podcast-title.form-control(aria-describeby="podcast-title-help" name="title" required oninput="onPodcastTitle(event)")
                                 #podcast-title-help.form-text This will be the name of your Podcast. You will publish episodes under this podcast title.
                             .mb-3
                                 label.form-label(for="podcast-description") Describe your podcast this is an broad summary of the subject of your podcasts
-                                textarea#podcast-description.form-control(aria-describeby="podcast-description-help" name="description" required style="resize:none;" oninput="onDescription(event)")
+                                textarea#podcast-description.form-control(aria-describeby="podcast-description-help" name="description" required style="resize:none;" oninput="onPodcastDescription(event)")
                                 #podcast-description-help.form-text This will be the name of your Podcast. Your Podcast will have episodes.
                             .mb-3
                                 label.form-label(for="podcast-packshot") Packshot for your podcast.
-                                input#podcast-packshot.form-control-file(aria-describeby="podcast-image-help" name="image" type="file" onchange="onImage(event)" required accept="image/*")
+                                input#podcast-packshot.form-control-file(aria-describeby="podcast-image-help" name="image" type="file" onchange="onPodcastImage(event)" required accept="image/*")
                                 #podcast-image-help.form-text Upload your Podcast image 3000 x 3000 (appears in podcast apps as your packshot)
                             .mb-3
                                 button.btn.btn-primary Create

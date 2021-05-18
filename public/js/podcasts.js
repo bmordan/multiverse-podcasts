@@ -1,17 +1,17 @@
-function onTitle (event) {
+function onPodcastTitle (event) {
     const element = document.querySelector('#preview .card-body .card-title')
     element.innerHTML = event.target.value
 }
-function onDescription (event) {
+function onPodcastDescription (event) {
     const element = document.querySelector('#preview .card-body .card-text')
     element.innerHTML = event.target.value
 }
-function onImage (event) {
+function onPodcastImage (event) {
     const src = URL.createObjectURL(event.target.files[0])
     const element = document.querySelector('#preview img')
     element.setAttribute('src', src)
 }
-function onSubmit (form) {
+function onPodcastSubmit (form) {
     fetch('/podcasts', {
         method: "POST",
         body: new FormData(form)
@@ -19,7 +19,7 @@ function onSubmit (form) {
         if (res.status === 201) window.location.href = `${window.location.origin}/podcasts`
     }).catch(console.error)
 }
-function onUpdate (form) {
+function onPodcastUpdate (form) {
     const formData = new FormData(form)
     fetch(`/podcasts/${formData.get('id')}/edit`, {
         method: "POST",
@@ -31,6 +31,7 @@ function onUpdate (form) {
 }
 function onUpdateEpisode (form, podcast_id) {
     const formData = new FormData(form)
+    formData.set('content', editor.getContents())
     fetch(`/podcasts/${podcast_id}/episodes/${formData.get('id')}/edit`, {
         method: "POST",
         body: formData
@@ -39,7 +40,73 @@ function onUpdateEpisode (form, podcast_id) {
         $(`#${formData.get('id')}`).empty().html(updatedPodcastFragment)
     })
 }
+
+function onEpisodeTitle (event) {
+    const element = document.querySelector('#preview .card-body .card-title')
+    element.innerHTML = event.target.value
+}
+function onEpisodeDescription (event) {
+    const element = document.querySelector('#preview .card-body .card-text')
+    element.innerHTML = event.target.value
+}
+function onEpisodeSubmit (form) {
+    const formData = new FormData(form)
+    formData.set('content', editor.getContents())
+    fetch(`/podcasts/${formData.get('podcast_id')}/episodes`, {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.text())
+    .then(podcast => {
+        $('#episodes .episode').length ? $('#episodes').append(podcast) : $('#episodes').prepend(podcast)
+        $('#add-episode-component').collapse('hide')
+    })
+    .catch(console.error)
+}
+function init() {    
+    if ($('.episode').length) $('#publish').removeAttr('disabled')
+}
+function publish(id) {
+    fetch(`/podcasts/${id}/publish`)
+        .then(res => {
+            if (res.status === 201) {
+                $('#publish').attr('disabled', 'disabled')
+            }
+        })
+        .catch(console.error)
+}
+
+function toggleShowNotes(id) {
+    $(id).collapse('toggle')
+}
+
 function removeEpisode(id) {
     $(`#${id}`).remove()
     fetch(`/episodes/${id}/delete`)
 }
+
+function deletePodcast(id) {
+    fetch(`/podcasts/${id}/delete`)
+        .then(() => {
+            window.location.href = '/podcasts'
+        })
+        .catch(console.error)
+}
+if ($('episode-content').length) {
+    const editor = SUNEDITOR.create('episode-content', {
+        lang: SUNEDITOR_LANG['en'],
+        buttonList: [
+            ['font', 'fontSize', 'formatBlock'],
+            ['table', 'link'],
+            ['align', 'horizontalRule', 'list'],
+            ['undo', 'redo'],
+        ],
+        height: '12rem'
+    })
+    
+    editor.onChange = function (contents, core) {
+        $('#card-content').html(contents)
+    }
+}
+init()
+

@@ -205,6 +205,7 @@ app.post('/podcasts/:podcast_id/episodes/:id/edit', [protect, uploads.single('au
     }
     await episode.update(update)
     const html = pug.renderFile(path.join(__dirname, 'views', 'podcast_edit_episode.pug'), { podcast, episode })
+    console.log(html)
     res.send(html)
 })
 

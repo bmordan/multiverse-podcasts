@@ -1,3 +1,4 @@
+const SUNEDITORS = new Map()
 function onPodcastTitle (event) {
     const element = document.querySelector('#preview .card-body .card-title')
     element.innerHTML = event.target.value
@@ -31,13 +32,17 @@ function onPodcastUpdate (form) {
 }
 function onUpdateEpisode (form, podcast_id) {
     const formData = new FormData(form)
+    const id = formData.get('id')
+    const editor = SUNEDITORS.get(`${id}-content`)
     formData.set('content', editor.getContents())
-    fetch(`/podcasts/${podcast_id}/episodes/${formData.get('id')}/edit`, {
+    fetch(`/podcasts/${podcast_id}/episodes/${id}/edit`, {
         method: "POST",
         body: formData
     }).then(res => res.text())
     .then(updatedPodcastFragment => {
-        $(`#${formData.get('id')}`).empty().html(updatedPodcastFragment)
+        SUNEDITORS.delete(`${id}-content`)
+        $(`#${id}`).empty().html(updatedPodcastFragment)
+        SUNEDITORS.set(`${id}-content`, createSunEditorInstance(`${id}-content`))
     })
 }
 
@@ -92,7 +97,7 @@ function deletePodcast(id) {
         })
         .catch(console.error)
 }
-if ($('episode-content').length) {
+if ($('#episode-content').length) {
     const editor = SUNEDITOR.create('episode-content', {
         lang: SUNEDITOR_LANG['en'],
         buttonList: [
@@ -108,5 +113,25 @@ if ($('episode-content').length) {
         $('#card-content').html(contents)
     }
 }
+
+function createSunEditorInstance (id) {
+    return SUNEDITOR.create(id, {
+        lang: SUNEDITOR_LANG['en'],
+        buttonList: [
+            ['font', 'fontSize', 'formatBlock'],
+            ['table', 'link'],
+            ['align', 'horizontalRule', 'list'],
+            ['undo', 'redo'],
+        ],
+        height: '12rem'
+    })
+}
+
+if ($('.content-edit').length) {
+    $('.content-edit').each(function() {
+        SUNEDITORS.set($(this).attr('id'), createSunEditorInstance($(this).attr('id')))
+    })
+}
+
 init()
 

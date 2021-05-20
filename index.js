@@ -101,7 +101,7 @@ app.get('/podcasts', protect, async (req, res) => {
 app.post('/podcasts', [protect, uploads.single('image')], async (req, res) => {
     const podcast = await Podcast.create({
         title: req.body.title,
-        description: req.body.description.substring(0, 26),
+        description: req.body.description,
         content: req.body.description,
         image: `${BASE_URL}/uploads/image/${req.file.filename}`,
         link: `${BASE_URL}/uploads/feeds/`

@@ -5,6 +5,9 @@ Create the DB
 ```sh
 mysql -u root --password=$MYSQL_ROOT_PASSWORD
 ```
+```sql
+CREATE DATABASE podcasts;
+```
 Create a user for the app
 ```sql
 CREATE USER $PODCASTS_MYSQL_USER IDENTIFIED BY $PODCASTS_MYSQL_PASSWORD;

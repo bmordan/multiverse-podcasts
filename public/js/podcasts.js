@@ -56,6 +56,7 @@ function onEpisodeDescription (event) {
 }
 function onEpisodeSubmit (form) {
     const formData = new FormData(form)
+    const editor = SUNEDITORS.get('default')
     formData.set('content', editor.getContents())
     fetch(`/podcasts/${formData.get('podcast_id')}/episodes`, {
         method: "POST",
@@ -118,6 +119,8 @@ if ($('#episode-content').length) {
     editor.onChange = function (contents, core) {
         $('#card-content').html(contents)
     }
+
+    SUNEDITORS.set('default', editor)
 }
 
 function createSunEditorInstance (id) {

@@ -1,6 +1,6 @@
 {
   "name": "multiverse-podcasts",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Multiverse internal podcast feeds",
   "main": "index.js",
   "scripts": {

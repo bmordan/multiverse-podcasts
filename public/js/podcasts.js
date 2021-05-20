@@ -65,6 +65,8 @@ function onEpisodeSubmit (form) {
     .then(res => res.text())
     .then(podcast => {
         $('#episodes .episode').length ? $('#episodes').append(podcast) : $('#episodes').prepend(podcast)
+        $('#add-episode').trigger('reset')
+        editor.setContents("")
         $('#add-episode-component').collapse('hide')
     })
     .catch(console.error)

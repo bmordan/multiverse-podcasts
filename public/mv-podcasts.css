@@ -32,6 +32,9 @@ a.card:hover {
     border:solid 0px;
     background-color:transparent;
 }
+.btn-fixed-width {
+    width: 8rem;
+}
 @media screen and (min-width: 30rem){
     .podcast .jumbotron img {
         width: 12rem;

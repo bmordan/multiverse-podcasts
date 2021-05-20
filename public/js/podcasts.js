@@ -97,6 +97,12 @@ function deletePodcast(id) {
         })
         .catch(console.error)
 }
+
+function copyToClipboard(ext) {
+    const url = document.getElementById(ext).innerHTML
+    navigator.clipboard.writeText(url)
+    $('#modal').modal('hide')
+}
 if ($('#episode-content').length) {
     const editor = SUNEDITOR.create('episode-content', {
         lang: SUNEDITOR_LANG['en'],

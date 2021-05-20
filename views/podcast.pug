@@ -11,7 +11,23 @@ block content
                 a.ml-2(href=`/podcasts/${podcast.id}/edit`)
                     button.btn.btn-primary Edit Podcast
                 button#publish.btn.btn-success.ml-2(type="button" onclick=`publish("${podcast.id}");` disabled) Publish
-                button.btn.btn-warning.ml-2 Copy RSS feed
+                button.btn.btn-warning.ml-2(data-toggle="modal" data-target="#modal") RSS Feeds
+        .modal.fade#modal
+            .modal-dialog
+                .modal-content 
+                    .modal-header
+                        h5.modal-title Copy RSS, Atom and JSON Feeds
+                        button.btn.btn-outline-secondary(data-dismiss="modal") Close
+                    .modal-body 
+                        .d-flex.mb-2
+                            .flex-fill#rss https://podcasts.multiverse-coaches.io/uploads/feeds/#{podcast.title.split(" ").join("-").toLowerCase()}.rss
+                            button.btn.btn-warning.btn-fixed-width(onclick="copyToClipboard('rss')") RSS
+                        .d-flex.mb-2
+                            .flex-fill#atom https://podcasts.multiverse-coaches.io/uploads/feeds/#{podcast.title.split(" ").join("-").toLowerCase()}.atom
+                            button.btn.btn-warning.btn-fixed-width(onclick="copyToClipboard('atom')") Atom
+                        .d-flex
+                            .flex-fill#json https://podcasts.multiverse-coaches.io/uploads/feeds/#{podcast.title.split(" ").join("-").toLowerCase()}.json
+                            button.btn.btn-warning.btn-fixed-width(onclick="copyToClipboard('json')") JSON
         p.lead=podcast.title
         hr.mt-4
         p=podcast.description

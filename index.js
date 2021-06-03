@@ -228,6 +228,10 @@ app.get('/episodes/:id/delete', protect, async (req, res) => {
     res.sendStatus(204)
 })
 
+app.get('/help', (req, res) => {
+    res.render('help')
+})
+
 app.get('/signout', (req, res) => {
     req.session.user = undefined
     res.sendStatus(200)
@@ -236,6 +240,7 @@ app.get('/signout', (req, res) => {
 app.listen(3333, async () => {
     await sequelize.sync()
     const episodes = await Episode.findAndCountAll()
+    debugger;
     checkDiscSpace(path.join(__dirname)).then(diskSpace => {
         console.table({
             application: "Multiverse Podcasts",

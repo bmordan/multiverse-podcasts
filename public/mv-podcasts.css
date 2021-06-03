@@ -24,6 +24,9 @@ a.card:hover {
     background-size: cover;
     min-height: 22rem;
 }
+#podcasts .card {
+    height: 32rem;
+}
 .podcast .jumbotron img {
     width: 6rem;
     left:0;
@@ -33,8 +36,16 @@ a.card:hover {
     background-color:transparent;
 }
 .btn-fixed-width {
-    width: 8rem;
+    width: 16rem;
 }
+.text-tiny {
+    font-family: monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: .5rem;
+}
+
 @media screen and (min-width: 30rem){
     .podcast .jumbotron img {
         width: 12rem;

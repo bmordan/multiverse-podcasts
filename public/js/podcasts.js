@@ -34,6 +34,7 @@ function onUpdateEpisode (form, podcast_id) {
     const formData = new FormData(form)
     const id = formData.get('id')
     const editor = SUNEDITORS.get(`${id}-content`)
+    debugger;
     formData.set('content', editor.getContents())
     fetch(`/podcasts/${podcast_id}/episodes/${id}/edit`, {
         method: "POST",

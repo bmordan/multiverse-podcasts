@@ -1,28 +1,25 @@
 .row.podcast_edit
     .col-sm-12.col-md-8
-        section 
-            form.card.card-body(onsubmit="onPodcastUpdate(this);return false;")
-                h2 Update your Multiverse Podcast Meta Data
-                input(type="hidden" name="id" value=podcast.id)
-                .mb-3
-                    label.form-label(for="podcast-title") Your podcast title
-                    input#podcast-title.form-control(aria-describeby="podcast-title-help" name="title" required oninput="onPodcastTitle(event)" value=podcast.title)
-                    #podcast-title-help.form-text This will be the name of your Podcast. You will publish episodes under this podcast title.
-                .mb-3
-                    label.form-label(for="podcast-description") Describe your podcast this is an broad summary of the subject of your podcasts
-                    textarea#podcast-description.form-control(aria-describeby="podcast-description-help" name="description" required style="resize:none;" oninput="onPodcastDescription(event)")=podcast.description
-                    #podcast-description-help.form-text This will be the name of your Podcast. Your Podcast will have episodes.
-                .mb-3
-                    label.form-label(for="podcast-packshot") Packshot for your podcast.
-                    input#podcast-packshot.form-control-file(aria-describeby="podcast-image-help" name="image" type="file" onchange="onPodcastImage(event)" accept="image/*")
-                    #podcast-image-help.form-text Upload your Podcast image 3000 x 3000 (appears in podcast apps as your packshot)
-                .mb-3.d-flex.flex-row
-                    button.btn.btn-primary Update
-                    a.ml-2.inline-block(href=`/podcasts/${podcast.id}`)
-                        button(type="button").btn.btn-outline-secondary Back
-                    button.btn.btn-danger.ml-2(onclick=`deletePodcast("${podcast.id}")`) Delete
-    .col-sm-12.col-md-4 
-        #preview.card
+        form.card.card-body(onsubmit="onPodcastUpdate(this);return false;")
+            h2 Update your Multiverse Podcast Description
+            input(type="hidden" name="id" value=podcast.id)
+            .mb-3
+                label.form-label(for="podcast-title") Your podcast title
+                input#podcast-title.form-control(aria-describeby="podcast-title-help" name="title" required oninput="onPodcastTitle(event)" value=podcast.title)
+                #podcast-title-help.form-text This will be the name of your Podcast. You will publish episodes under this podcast title.
+            .mb-3
+                label.form-label(for="podcast-description") Describe your podcast this is an broad summary of the subject of your podcasts
+                textarea#podcast-description.form-control(aria-describeby="podcast-description-help" name="description" required style="resize:none;" oninput="onPodcastDescription(event)")=podcast.description
+                #podcast-description-help.form-text This will be the name of your Podcast. Your Podcast will have episodes.
+            .mb-3
+                label.form-label(for="podcast-packshot") Packshot for your podcast.
+                input#podcast-packshot.form-control-file(aria-describeby="podcast-image-help" name="image" type="file" onchange="onPodcastImage(event)" accept="image/*")
+                #podcast-image-help.form-text Upload your Podcast image 3000 x 3000 (appears in podcast apps as your packshot)
+            .mb-3.d-flex.flex-row.justify-content-end
+                button.btn.btn-primary Update
+                button.btn.btn-danger.ml-2(onclick=`deletePodcast("${podcast.id}")`) Delete
+    .col-sm-12.col-md-4
+        section#preview.card
             img.card-img-top(alt="podcast packshot" src=podcast.image)
             .card-body
                 h5.card-title=podcast.title

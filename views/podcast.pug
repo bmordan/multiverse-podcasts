@@ -5,9 +5,9 @@ block content
     .container.mb-4.podcast
         .jumbotron.mt-4.d-flex.align-items-end.justify-content-end.bg-primary.position-relative.card-image(style=`background-image:url('${podcast.image}');`)
             img(src='/images/mv-hero.svg' alt=podcast.title)
-            nav
-                a(href="/podcasts")
-                    button.btn.btn-secondary Back
+            nav.w-100.d-flex.justify-content-end.align-items-center
+                a.flex-fill(href="/podcasts")
+                    button.btn.btn-light Back
                 a.ml-2(href=`/podcasts/${podcast.id}/edit`)
                     button.btn.btn-primary Edit Podcast
                 button#publish.btn.btn-success.ml-2(type="button" onclick=`publish("${podcast.id}");` disabled) Publish
@@ -16,19 +16,19 @@ block content
             .modal-dialog
                 .modal-content 
                     .modal-header
-                        h5.modal-title Copy RSS, Atom and JSON Feeds
+                        h5.modal-title RSS, Atom and JSON Feeds
                         button.btn.btn-outline-secondary(data-dismiss="modal") Close
-                    .modal-body 
-                        .d-flex.mb-2
-                            .flex-fill#rss https://podcasts.multiverse-coaches.io/uploads/feeds/#{podcast.title.split(" ").join("-").toLowerCase()}.rss
-                            button.btn.btn-warning.btn-fixed-width(onclick="copyToClipboard('rss')") RSS
-                        .d-flex.mb-2
-                            .flex-fill#atom https://podcasts.multiverse-coaches.io/uploads/feeds/#{podcast.title.split(" ").join("-").toLowerCase()}.atom
-                            button.btn.btn-warning.btn-fixed-width(onclick="copyToClipboard('atom')") Atom
-                        .d-flex
-                            .flex-fill#json https://podcasts.multiverse-coaches.io/uploads/feeds/#{podcast.title.split(" ").join("-").toLowerCase()}.json
-                            button.btn.btn-warning.btn-fixed-width(onclick="copyToClipboard('json')") JSON
-        p.lead=podcast.title
+                    .modal-body
+                        .d-flex.align-items-center.mb-2
+                            .flex-fill#rss.text-tiny https://podcasts.multiverse-coaches.io/uploads/feeds/#{podcast.title.split(" ").join("-").toLowerCase()}.rss
+                            button.btn.btn-warning.btn-fixed-width(onclick="copyToClipboard('rss')") Copy RSS
+                        .d-flex.align-items-center.mb-2
+                            .flex-fill#atom.text-tiny https://podcasts.multiverse-coaches.io/uploads/feeds/#{podcast.title.split(" ").join("-").toLowerCase()}.atom
+                            button.btn.btn-warning.btn-fixed-width(onclick="copyToClipboard('atom')") Copy Atom
+                        .d-flex.align-items-center
+                            .flex-fill#json.text-tiny https://podcasts.multiverse-coaches.io/uploads/feeds/#{podcast.title.split(" ").join("-").toLowerCase()}.json
+                            button.btn.btn-warning.btn-fixed-width(onclick="copyToClipboard('json')") Copy JSON
+        h2=podcast.title
         hr.mt-4
         p=podcast.description
         ul#episodes.list-group
@@ -36,9 +36,9 @@ block content
                 each episode in podcast.Episodes.reverse()
                     include episode.pug
         section.my-3.d-flex
-            button.btn.btn-primary(type="button" data-toggle="collapse" data-target="#add-episode-component" aria-expanded="false" aria-controls="add-episode-component") Add Episode
+            button.btn.btn-success(type="button" data-toggle="collapse" data-target="#add-episode-component" aria-expanded="false" aria-controls="add-episode-component") Add Episode
             a.ml-2(href=`/podcasts/${podcast.id}/edit`)
-                button.btn.btn-light Edit episodes
+                button.btn.btn-primary Edit episodes
         #add-episode-component.collapse
             .row
                 .col-sm-12.col-md-8

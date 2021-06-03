@@ -38,12 +38,21 @@ a.card:hover {
 .btn-fixed-width {
     width: 16rem;
 }
+.modal-body {
+    overflow: hidden;
+}
 .text-tiny {
     font-family: monospace;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     padding-right: .5rem;
+    animation-name: ticker;
+    animation-duration: 15s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+@keyframes ticker {
+    0% {transform: translate(300px)}
+    100% {transform: translate(-900px)}
 }
 
 @media screen and (min-width: 30rem){

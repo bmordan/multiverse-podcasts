@@ -20,14 +20,17 @@ block content
                         button.btn.btn-outline-secondary(data-dismiss="modal") Close
                     .modal-body
                         .d-flex.align-items-center.mb-2
-                            .flex-fill#rss.text-tiny https://podcasts.multiverse-coaches.io/uploads/feeds/#{podcast.title.split(" ").join("-").toLowerCase()}.rss
-                            button.btn.btn-warning.btn-fixed-width(onclick="copyToClipboard('rss')") Copy RSS
+                            span.inline-block.w-75.overflow-hidden.bg-light
+                                #rss.text-tiny https://podcasts.multiverse-coaches.io/uploads/feeds/#{podcast.title.split(" ").join("-").toLowerCase()}.rss
+                            button.btn.btn-warning.btn-fixed-width.ml-3(onclick="copyToClipboard('rss')") Copy RSS
                         .d-flex.align-items-center.mb-2
-                            .flex-fill#atom.text-tiny https://podcasts.multiverse-coaches.io/uploads/feeds/#{podcast.title.split(" ").join("-").toLowerCase()}.atom
-                            button.btn.btn-warning.btn-fixed-width(onclick="copyToClipboard('atom')") Copy Atom
+                            span.inline-block.w-75.overflow-hidden.bg-light
+                                #atom.text-tiny https://podcasts.multiverse-coaches.io/uploads/feeds/#{podcast.title.split(" ").join("-").toLowerCase()}.atom
+                            button.btn.btn-warning.btn-fixed-width.ml-3(onclick="copyToClipboard('atom')") Copy Atom
                         .d-flex.align-items-center
-                            .flex-fill#json.text-tiny https://podcasts.multiverse-coaches.io/uploads/feeds/#{podcast.title.split(" ").join("-").toLowerCase()}.json
-                            button.btn.btn-warning.btn-fixed-width(onclick="copyToClipboard('json')") Copy JSON
+                            span.inline-block.w-75.overflow-hidden.bg-light
+                                #atom.text-tiny https://podcasts.multiverse-coaches.io/uploads/feeds/#{podcast.title.split(" ").join("-").toLowerCase()}.json
+                            button.btn.btn-warning.btn-fixed-width.ml-3(onclick="copyToClipboard('json')") Copy JSON
         h2=podcast.title
         hr.mt-4
         p=podcast.description

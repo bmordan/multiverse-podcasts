@@ -104,8 +104,8 @@ app.post('/podcasts', [protect, uploads.single('image')], async (req, res) => {
         description: req.body.description,
         content: req.body.description,
         image: `${BASE_URL}/uploads/image/${req.file.filename}`,
-        link: `${BASE_URL}/uploads/feeds/`
     })
+    await podcast.update({link: `${BASE_URL}/podcasts/${podcast.id}`})
     res.sendStatus(201)
 })
 
@@ -115,14 +115,17 @@ app.get('/podcasts/:id/publish', protect, async (req, res) => {
             model: Episode
         }
     })
+
     const author = {
         name: req.session.user.name,
-        email: req.session.user.email
+        email: req.session.user.email,
+        link: req.session.user.avatar
     }
     
     const feedFileName = podcast.title.split(' ').join('-').toLowerCase()
     
     const feedLinks = {
+        rss:  `${BASE_URL}/uploads/feeds/${feedFileName}.rss`,
         json: `${BASE_URL}/uploads/feeds/${feedFileName}.json`,
         atom: `${BASE_URL}/uploads/feeds/${feedFileName}.atom`
     }
@@ -140,13 +143,14 @@ app.get('/podcasts/:id/publish', protect, async (req, res) => {
             date: episode.createdAt,
             audio: { url: `${BASE_URL}/uploads/audio/${filename}`, length, type },
             author: [author],
-            published: new Date(episode.createdAt)
+            published: new Date(episode.createdAt),
+            image: podcast.image
         })
     })
 
     feed.addCategory('Multiverse')
 
-    fs.writeFileSync(path.join(__dirname, 'public', 'uploads', 'feeds', `${feedFileName}.rss`), feed.rss2())
+    fs.writeFileSync(path.join(__dirname, 'public', 'uploads', 'feeds', `${feedFileName}.rss`),  feed.rss2())
     fs.writeFileSync(path.join(__dirname, 'public', 'uploads', 'feeds', `${feedFileName}.atom`), feed.atom1())
     fs.writeFileSync(path.join(__dirname, 'public', 'uploads', 'feeds', `${feedFileName}.json`), feed.json1())
 
@@ -171,7 +175,7 @@ app.post('/podcasts/:id/edit', [protect, uploads.single('image')], async (req, r
         description: req.body.description || podcast.title,
         content: null,
         image: req.file ? `${BASE_URL}/uploads/image/${req.file.filename}` : podcast.image,
-        link: req.file ? `${BASE_URL}/uploads/audio/${req.file.filename}` : podcast.link
+        link: podcast.link
     }
     await podcast.update(update)
     const html = pug.renderFile(path.join(__dirname, 'views', 'podcast_edit_podcast.pug'), { podcast: update })
@@ -183,7 +187,7 @@ app.post('/podcasts/:id/episodes', [protect, uploads.single('audio')], async (re
     const episode = await podcast.createEpisode({
         title: req.body.title,
         description: req.body.description,
-        link: `${BASE_URL}/uploads/audio/${req.file.filename}`,
+        link: `${BASE_URL}/podcasts/${req.params.id}`,
         content: req.body.content,
         audio: [req.file.filename, req.file.size, req.file.mimetype].join("|")
     })
@@ -205,7 +209,6 @@ app.post('/podcasts/:podcast_id/episodes/:id/edit', [protect, uploads.single('au
     }
     await episode.update(update)
     const html = pug.renderFile(path.join(__dirname, 'views', 'podcast_edit_episode.pug'), { podcast, episode })
-    console.log(html)
     res.send(html)
 })
 
@@ -240,7 +243,6 @@ app.get('/signout', (req, res) => {
 app.listen(3333, async () => {
     await sequelize.sync()
     const episodes = await Episode.findAndCountAll()
-    debugger;
     checkDiscSpace(path.join(__dirname)).then(diskSpace => {
         console.table({
             application: "Multiverse Podcasts",

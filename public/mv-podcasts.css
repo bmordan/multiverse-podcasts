@@ -55,6 +55,21 @@ a.card:hover {
     100% {transform: translate(-900px)}
 }
 
+.published::after, .not-published::after {
+    content: '🟠';
+    text-align: center;
+    line-height: 2.5rem;
+    width: 5rem;
+    height: 2.5rem;
+    border-radius: 6px;
+    margin-left: 1rem;
+    background-color: #f8f9fa;
+}
+.published::after {
+    content: '🟢';
+}
+
+
 @media screen and (min-width: 30rem){
     .podcast .jumbotron img {
         width: 12rem;

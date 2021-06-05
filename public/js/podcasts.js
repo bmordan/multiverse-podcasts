@@ -74,12 +74,14 @@ function onEpisodeSubmit (form) {
 }
 function init() {    
     if ($('.episode').length) $('#publish').removeAttr('disabled')
+    markPublishedEpisodes()
 }
 function publish(id) {
     fetch(`/podcasts/${id}/publish`)
         .then(res => {
             if (res.status === 201) {
                 $('#publish').attr('disabled', 'disabled')
+                markPublishedEpisodes()
             }
         })
         .catch(console.error)
@@ -143,6 +145,19 @@ if ($('.content-edit').length) {
     $('.content-edit').each(function() {
         SUNEDITORS.set($(this).attr('id'), createSunEditorInstance($(this).attr('id')))
     })
+}
+
+function markPublishedEpisodes () {
+    if (!$('#json').length) return
+
+    fetch($('#json').text())
+        .then(res => res.status === 404 ? {items: []} : res.json())
+        .then(feed => {
+            const publishedIds = feed.items.map(item => item.id)
+            const uploadedIds = JSON.parse($('#episodes').attr('data-epids'))
+            for (const eid of uploadedIds) $(`#${eid}`).addClass(publishedIds.includes(eid) ? 'published' : 'not-published')
+        })
+        .catch(console.error)
 }
 
 init()

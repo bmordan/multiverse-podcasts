@@ -29,12 +29,12 @@ block content
                             button.btn.btn-warning.btn-fixed-width.ml-3(onclick="copyToClipboard('atom')") Copy Atom
                         .d-flex.align-items-center
                             span.inline-block.w-75.overflow-hidden.bg-light
-                                #atom.text-tiny https://podcasts.multiverse-coaches.io/uploads/feeds/#{podcast.title.split(" ").join("-").toLowerCase()}.json
+                                #json.text-tiny https://podcasts.multiverse-coaches.io/uploads/feeds/#{podcast.title.split(" ").join("-").toLowerCase()}.json
                             button.btn.btn-warning.btn-fixed-width.ml-3(onclick="copyToClipboard('json')") Copy JSON
         h2=podcast.title
         hr.mt-4
         p=podcast.description
-        ul#episodes.list-group
+        ul#episodes.list-group(data-epids=`${JSON.stringify(podcast.Episodes.map(ep => ep.id))}`)
             if podcast.Episodes.length 
                 each episode in podcast.Episodes.reverse()
                     include episode.pug

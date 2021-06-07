@@ -158,7 +158,14 @@ app.get('/podcasts/:id/publish', protect, async (req, res) => {
 })
 
 app.get('/podcasts/:id', protect, async (req, res) => {
-    const podcast = await Podcast.findByPk(req.params.id, { include: { model: Episode, nested: true } })
+    const podcast = await Podcast.findByPk(req.params.id, {
+        include: {
+            model: Episode, nested: true 
+        },
+        order: [
+            [{model: Episode}, 'title', 'DESC'],
+        ]
+    })
     res.render('podcast', { ...defaultProps, user: req.session.user, podcast })
 })
 

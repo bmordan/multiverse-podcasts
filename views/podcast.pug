@@ -36,7 +36,7 @@ block content
         p=podcast.description
         ul#episodes.list-group(data-epids=`${JSON.stringify(podcast.Episodes.map(ep => ep.id))}`)
             if podcast.Episodes.length 
-                each episode in podcast.Episodes.reverse()
+                each episode in podcast.Episodes
                     include episode.pug
         section.my-3.d-flex
             button.btn.btn-success(type="button" data-toggle="collapse" data-target="#add-episode-component" aria-expanded="false" aria-controls="add-episode-component") Add Episode

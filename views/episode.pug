@@ -1,11 +1,22 @@
-li.list-group-item.d-flex.align-items-center.episode(id=episode.id)
-    article.flex-fill
-        h5.mb-1=episode.title
-        p.mb-1=episode.description
-        button.btn.btn-link(type="button" onclick=`toggleShowNotes("#${episode.id}-show-notes")` role="button" aria-expanded="false" aria-controls=`${episode.id}-show-notes`) show notes
-        .collapse.bg-light.p-2(id=`${episode.id}-show-notes`)!=episode.content
-    nav
-        a(href=episode.link download)
-            button.btn.btn-warning Download
-    audio.ml-3(controls)
-        source(src=episode.link type="audio/mpeg")
+li.list-group-item.episode(id=episode.id)
+    article.d-md-none.d-lg-none
+        h5=episode.title
+        p.mb-2=episode.description
+            button.btn.btn-link.p-0(type="button" onclick=`toggleShowNotes("#${episode.id}-show-notes")` role="button" aria-expanded="false" aria-controls=`${episode.id}-show-notes` style="transform:translate(2px,-2px);") show notes.
+        .collapse.bg-light.p-2.mb-2(id=`${episode.id}-show-notes`)!=episode.content
+        a.d-inline-block.mb-2.w-100(href=episode.link download)
+            button.btn.btn-warning.w-100(style="border-radius:30px;height:54px;") Download
+        audio.w-100(controls)
+            source(src=episode.link type="audio/mpeg")
+    article.d-none.d-md-flex.align-items-center
+        header.flex-fill
+            h5.mb-1=episode.title
+            p.mb-1=episode.description
+            button.btn.btn-link(type="button" onclick=`toggleShowNotes("#${episode.id}-show-notes")` role="button" aria-expanded="false" aria-controls=`${episode.id}-show-notes`) show notes
+            .collapse.bg-light.p-2(id=`${episode.id}-show-notes`)!=episode.content
+        nav
+            a(href=episode.link download)
+                button.btn.btn-warning Download
+        audio.ml-3(controls)
+            source(src=episode.link type="audio/mpeg") 
+    

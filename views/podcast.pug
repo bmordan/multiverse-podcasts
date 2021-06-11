@@ -5,13 +5,24 @@ block content
     .container.mb-4.podcast
         .jumbotron.mt-4.d-flex.align-items-end.justify-content-end.bg-primary.position-relative.card-image(style=`background-image:url('${podcast.image}');`)
             img(src='/images/mv-hero.svg' alt=podcast.title)
-            nav.w-100.d-flex.justify-content-end.align-items-center
+            nav.w-100.d-none.d-sm-none.d-md-flex.justify-content-end.align-items-center
                 a.flex-fill(href="/podcasts")
                     button.btn.btn-light Back
                 a.ml-2(href=`/podcasts/${podcast.id}/edit`)
                     button.btn.btn-primary Edit Podcast
                 button#publish.btn.btn-success.ml-2(type="button" onclick=`publish("${podcast.id}");` disabled) Publish
                 button.btn.btn-warning.ml-2(data-toggle="modal" data-target="#modal") RSS Feeds
+        nav.row.d-md-none.d-lg-none 
+            .col-sm-12.mb-2 
+                a(href="/podcasts")
+                    button.btn.btn-outline-secondary.w-100 Back
+            .col-sm-12.mb-2
+                a(href=`/podcasts/${podcast.id}/edit`)
+                    button.btn.btn-primary.w-100 Edit Podcast
+            .col-sm-12.mb-2
+                button#publish.btn.btn-success.w-100(type="button" onclick=`publish("${podcast.id}");` disabled) Publish
+            .col-sm-12.mb-4
+                button.btn.btn-warning.w-100(data-toggle="modal" data-target="#modal") RSS Feeds 
         .modal.fade#modal
             .modal-dialog
                 .modal-content 
@@ -34,6 +45,7 @@ block content
         h2=podcast.title
         hr.mt-4
         p=podcast.description
+        h3.mb-4 Episodes
         ul#episodes.list-group(data-epids=`${JSON.stringify(podcast.Episodes.map(ep => ep.id))}`)
             if podcast.Episodes.length 
                 each episode in podcast.Episodes

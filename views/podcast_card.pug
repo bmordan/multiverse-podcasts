@@ -4,4 +4,4 @@ mixin podcast(podcast)
             article.card-image(style=`background-image:url('${podcast.image}');`)
             .card-body 
                 h5.card-title=podcast.title
-                p.card-text=`${podcast.description.substring(0,147)} ${podcast.description.length > 147 ? "..." : ""}`
+                p.card-text=`${podcast.description.substring(0,132)} ${podcast.description.length > 132 ? "..." : ""}`

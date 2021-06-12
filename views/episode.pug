@@ -5,7 +5,7 @@ li.list-group-item.episode(id=episode.id)
             button.btn.btn-link.p-0(type="button" onclick=`toggleShowNotes("#${episode.id}-show-notes")` role="button" aria-expanded="false" aria-controls=`${episode.id}-show-notes` style="transform:translate(2px,-2px);") show notes.
         .collapse.bg-light.p-2.mb-2(id=`${episode.id}-show-notes`)!=episode.content
         a.d-inline-block.mb-2.w-100(href=episode.link download)
-            button.btn.btn-warning.w-100(style="border-radius:30px;height:54px;") Download
+            button.btn.btn-warning.w-100 Download
         audio.w-100(controls)
             source(src=episode.link type="audio/mpeg")
     article.d-none.d-md-flex.align-items-center

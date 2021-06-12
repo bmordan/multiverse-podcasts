@@ -56,13 +56,14 @@ a.card:hover {
 }
 
 .published::after, .not-published::after {
+    display: block;
     content: '🟠';
     text-align: center;
     line-height: 2.5rem;
     width: 5rem;
     height: 2.5rem;
     border-radius: 6px;
-    margin-left: 1rem;
+    margin: .5rem;
     background-color: #f8f9fa;
 }
 .published::after {

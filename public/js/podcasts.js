@@ -56,6 +56,7 @@ function onEpisodeDescription (event) {
     element.innerHTML = event.target.value
 }
 function onEpisodeSubmit (form) {
+    $('#add-episode-component').addClass('uploading')
     const formData = new FormData(form)
     const editor = SUNEDITORS.get('default')
     formData.set('content', editor.getContents())
@@ -68,16 +69,31 @@ function onEpisodeSubmit (form) {
         $('#episodes').prepend(podcast)
         $('#add-episode').trigger('reset')
         editor.setContents("")
+        $('#add-episode-component').removeClass('uploading')
         $('#add-episode-component').collapse('hide')
+        $('[data-toggle="tooltip"]').tooltip()
     })
     .catch(console.error)
+}
+function scrollComponentIntoView (component) {
+    if ($(`#add-${component}-component`).length) {
+        $(`#add-${component}-component`).on('shown.bs.collapse', function () {
+            $(`#add-${component}-component`).get(0).scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            })
+        })
+    }   
 }
 function init() {    
     if ($('.episode').length) {
         $('#publish-sm').removeAttr('disabled')
         $('#publish-lg').removeAttr('disabled')
     }
+    
     $('[data-toggle="tooltip"]').tooltip()
+    
+    ;['podcast', 'episode'].forEach(scrollComponentIntoView)
 }
 function publish(id) {
     fetch(`/podcasts/${id}/publish`)
@@ -85,6 +101,7 @@ function publish(id) {
             if (res.status === 201) {
                 $('#publish-sm').attr('disabled', 'disabled')
                 $('#publish-lg').attr('disabled', 'disabled')
+                window.location.reload()
             }
         })
         .catch(console.error)

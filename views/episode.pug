@@ -19,7 +19,7 @@ li.list-group-item.episode(id=episode.id)
     article.d-none.d-md-flex.align-items-center
         header.flex-fill
             h5
-                span.mr-1(data-toggle="tooltip" data-placement="left" title=status[episode.status] role="button")=episode.status
+                span.mr-1(data-toggle="tooltip" data-placement="top" title=status[episode.status] role="button")=episode.status
                 | #{episode.title}
             p.mb-1=episode.description
             button.btn.btn-link(type="button" onclick=`toggleShowNotes("#${episode.id}-show-notes-lg")` role="button" aria-expanded="false" aria-controls=`${episode.id}-show-notes-lg`) show notes

@@ -34,6 +34,7 @@ class Episode extends Model{}
 class FeedLink extends Model{}
 class Author extends Model{}
 class Session extends Model{}
+class Publish extends Model{}
 
 Session.init({
     sid:{
@@ -85,8 +86,7 @@ Podcast.init({
     generator: {
         type: DataTypes.STRING,
         defaultValue: "Multiverse Podcasts"
-    },
-    author: DataTypes.STRING
+    }
 }, {sequelize})
 
 FeedLink.init({
@@ -105,7 +105,8 @@ Episode.init({
     link: DataTypes.STRING,
     description: DataTypes.TEXT,
     content: DataTypes.TEXT,
-    audio: DataTypes.STRING(2048)
+    audio: DataTypes.STRING(2048),
+    schedule: DataTypes.INTEGER
 }, {sequelize})
 
 Author.init({
@@ -117,10 +118,10 @@ Author.init({
 
 Podcast.hasMany(Episode)
 Episode.belongsTo(Podcast)
-Author.hasMany(Podcast)
-Podcast.belongsTo(Author)
+Author.hasOne(Podcast)
 Episode.hasMany(FeedLink)
 FeedLink.belongsTo(Episode)
+Podcast.belongsTo(Author)
 
 module.exports = {
     Podcast,

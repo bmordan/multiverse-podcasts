@@ -10,10 +10,17 @@ form.card.card-body.position-relative(onSubmit=`event.preventDefault();onUpdateE
     .mb-3
         label.form-label(for=`${episode.id}-content`) Show notes
         textarea.form-control.content-edit(id=`${episode.id}-content` name="content" style="resize:none;")!=episode.content
-    .mb-3
+    .mb-3.p-2.bg-light
         label.form-label(for="podcast-audio-file") Audio file of your podcast.
         input.form-control-file(name="audio" type="file" accept="audio/mp3,audio/wav,audio/acc;capture=microphone")
         .form-text Audio file (.mp3, .wav, .acc)
+    .mb-3.d-flex.flex-column.flex-lg-row.justify-content-lg-start
+        -
+            let [date, time] = new Date(episode.schedule).toISOString().split('T')
+        label.form-label.mt-lg-2.mr-lg-2(for="podcast-schedule-date") Set a publish date 
+        input#podcast-schedule-date(name="date" type="date" value=`${date === '1970-01-01' ? '' : date}` min=`${new Date().toISOString().substring(0,10)}`)
+        label.form-label.mt-2.mx-lg-2(for="podcast-schedule-time") Set a time
+        input#podcast-schedule-day(name="time" type="time" value=`${time.substring(0,5)}`)
     .mb-3.d-flex.justify-content-end
         button.btn.btn-primary Update
         button.btn.btn-danger.ml-2(type="button" onclick=`removeEpisode("${episode.id}")`) Delete

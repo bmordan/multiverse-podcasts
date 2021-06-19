@@ -34,13 +34,13 @@ function onUpdateEpisode (form, podcast_id) {
     const formData = new FormData(form)
     const id = formData.get('id')
     const editor = SUNEDITORS.get(`${id}-content`)
-    debugger;
     formData.set('content', editor.getContents())
     fetch(`/podcasts/${podcast_id}/episodes/${id}/edit`, {
         method: "POST",
         body: formData
     }).then(res => res.text())
     .then(updatedPodcastFragment => {
+        console.log(updatedPodcastFragment)
         SUNEDITORS.delete(`${id}-content`)
         $(`#${id}`).empty().html(updatedPodcastFragment)
         SUNEDITORS.set(`${id}-content`, createSunEditorInstance(`${id}-content`))
@@ -65,7 +65,7 @@ function onEpisodeSubmit (form) {
     })
     .then(res => res.text())
     .then(podcast => {
-        $('#episodes .episode').length ? $('#episodes').append(podcast) : $('#episodes').prepend(podcast)
+        $('#episodes').prepend(podcast)
         $('#add-episode').trigger('reset')
         editor.setContents("")
         $('#add-episode-component').collapse('hide')
@@ -73,15 +73,18 @@ function onEpisodeSubmit (form) {
     .catch(console.error)
 }
 function init() {    
-    if ($('.episode').length) $('#publish').removeAttr('disabled')
-    markPublishedEpisodes()
+    if ($('.episode').length) {
+        $('#publish-sm').removeAttr('disabled')
+        $('#publish-lg').removeAttr('disabled')
+    }
+    $('[data-toggle="tooltip"]').tooltip()
 }
 function publish(id) {
     fetch(`/podcasts/${id}/publish`)
         .then(res => {
             if (res.status === 201) {
-                $('#publish').attr('disabled', 'disabled')
-                markPublishedEpisodes()
+                $('#publish-sm').attr('disabled', 'disabled')
+                $('#publish-lg').attr('disabled', 'disabled')
             }
         })
         .catch(console.error)
@@ -145,19 +148,6 @@ if ($('.content-edit').length) {
     $('.content-edit').each(function() {
         SUNEDITORS.set($(this).attr('id'), createSunEditorInstance($(this).attr('id')))
     })
-}
-
-function markPublishedEpisodes () {
-    if (!$('#json').length) return
-
-    fetch($('#json').text())
-        .then(res => res.status === 404 ? {items: []} : res.json())
-        .then(feed => {
-            const publishedIds = feed.items.map(item => item.id)
-            const uploadedIds = JSON.parse($('#episodes').attr('data-epids'))
-            for (const eid of uploadedIds) $(`#${eid}`).addClass(publishedIds.includes(eid) ? 'published' : 'not-published')
-        })
-        .catch(console.error)
 }
 
 init()

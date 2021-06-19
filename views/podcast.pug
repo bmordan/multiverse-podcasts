@@ -10,7 +10,7 @@ block content
                     button.btn.btn-light Back
                 a.ml-2(href=`/podcasts/${podcast.id}/edit`)
                     button.btn.btn-primary Edit Podcast
-                button#publish.btn.btn-success.ml-2(type="button" onclick=`publish("${podcast.id}");` disabled) Publish
+                button#publish-lg.btn.btn-success.ml-2(type="button" onclick=`publish("${podcast.id}");` disabled) Publish
                 button.btn.btn-warning.ml-2(data-toggle="modal" data-target="#modal") RSS Feeds
         nav.row.d-md-none.d-lg-none 
             .col-sm-12.mb-2 
@@ -20,7 +20,7 @@ block content
                 a(href=`/podcasts/${podcast.id}/edit`)
                     button.btn.btn-primary.w-100 Edit Podcast
             .col-sm-12.mb-2
-                button#publish.btn.btn-success.w-100(type="button" onclick=`publish("${podcast.id}");` disabled) Publish
+                button#publish-sm.btn.btn-success.w-100(type="button" onclick=`publish("${podcast.id}");` disabled) Publish
             .col-sm-12.mb-4
                 button.btn.btn-warning.w-100(data-toggle="modal" data-target="#modal") RSS Feeds 
         .modal.fade#modal
@@ -73,10 +73,15 @@ block content
                                 label.form-label(for="episode-content") Show notes
                                 textarea#episode-content.form-control(aria-describeby="episode-content-help" name="content" style="resize:none;")
                                 #episode-content-help.form-text This will be the show notes and description for your episode. Include links and other information about the episode here.
-                            .mb-3
+                            .mb-3.p-2.bg-light
                                 label.form-label(for="podcast-audio-file") Audio file of your podcast.
                                 input#podcast-audio-file.form-control-file(aria-describeby="podcast-audio-file-help" name="audio" type="file" required accept="audio/mp3,audio/wav,audio/acc;capture=microphone")
                                 #podcast-audio-file-help.form-text Upload your Podcast audio file (.mp3, .wav, .acc)
+                            .mb-3.d-flex.flex-column.flex-lg-row.justify-content-lg-start
+                                label.form-label.mt-lg-2.mr-lg-2(for="podcast-schedule-date") Set a publish date 
+                                input#podcast-schedule-date(name="date" type="date")
+                                label.form-label.mt-2.mx-lg-2(for="podcast-schedule-time") Set a time
+                                input#podcast-schedule-day(name="time" type="time")
                             .mb-3
                                 button.btn.btn-primary Upload
                 .col-sm-12.col-md-4 

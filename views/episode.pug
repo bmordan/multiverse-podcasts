@@ -10,8 +10,8 @@ li.list-group-item.episode(id=episode.id)
             span.mr-1(data-toggle="tooltip" data-placement="top" title=status[episode.status] role="button")=episode.status
             | #{episode.title}
         p.mb-2=episode.description
-            button.btn.btn-link.p-0(type="button" onclick=`toggleShowNotes("#${episode.id}-show-notes")` role="button" aria-expanded="false" aria-controls=`${episode.id}-show-notes` style="transform:translate(2px,-2px);") show notes.
-        .collapse.bg-light.p-2.mb-2(id=`${episode.id}-show-notes`)!=episode.content
+            button.btn.btn-link.p-0(type="button" onclick=`toggleShowNotes("#${episode.id}-show-notes-sm")` role="button" aria-expanded="false" aria-controls=`${episode.id}-show-notes-sm` style="transform:translate(2px,-2px);") show notes.
+        .collapse.bg-light.p-2.mb-2(id=`${episode.id}-show-notes-sm`)!=episode.content
         a.d-inline-block.mb-2.w-100(href=episode.link download)
             button.btn.btn-warning.w-100 Download
         audio.w-100(controls)
@@ -22,8 +22,8 @@ li.list-group-item.episode(id=episode.id)
                 span.mr-1(data-toggle="tooltip" data-placement="left" title=status[episode.status] role="button")=episode.status
                 | #{episode.title}
             p.mb-1=episode.description
-            button.btn.btn-link(type="button" onclick=`toggleShowNotes("#${episode.id}-show-notes")` role="button" aria-expanded="false" aria-controls=`${episode.id}-show-notes`) show notes
-            .collapse.bg-light.p-2(id=`${episode.id}-show-notes`)!=episode.content
+            button.btn.btn-link(type="button" onclick=`toggleShowNotes("#${episode.id}-show-notes-lg")` role="button" aria-expanded="false" aria-controls=`${episode.id}-show-notes-lg`) show notes
+            .collapse.bg-light.p-2(id=`${episode.id}-show-notes-lg`)!=episode.content
         nav
             a(href=episode.link download)
                 button.btn.btn-warning Download

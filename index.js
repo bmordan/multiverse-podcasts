@@ -226,7 +226,7 @@ app.post('/podcasts/:id/episodes', [protect, uploads.single('audio')], async (re
     const episode = await podcast.createEpisode({
         title: req.body.title,
         description: req.body.description,
-        link: `${BASE_URL}/podcasts/${req.params.id}`,
+        link: `${BASE_URL}/uploads/audio/${req.file.filename}`,
         content: req.body.content,
         audio: [req.file.filename, req.file.size, req.file.mimetype].join("|"),
         schedule: publishAt.getTime()

@@ -65,6 +65,7 @@ function protect(req, res, next) {
 }
 
 async function publishPodcast (req, res) {
+    console.log(`publishPodcast: ${new Date().toISOString()} triggered`)
     const podcast = await Podcast.findByPk(req.params.id, {
         include: {
             model: Episode
@@ -94,7 +95,12 @@ async function publishPodcast (req, res) {
     const now = new Date().getTime()
 
     podcast.Episodes.forEach(episode => {
-        if (episode.schedule && episode.schedule > now) return
+        console.log({
+            now: now,
+            scheduled: episode.schedule,
+            publish: episode.schedule > now
+        })
+        if (episode.schedule && episode.schedule > (now + 1000)) return
         const [filename, length, type] = episode.audio.split("|")
 
         feed.addItem({

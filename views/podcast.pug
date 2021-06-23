@@ -79,7 +79,7 @@ block content
                                 #podcast-audio-file-help.form-text Upload your Podcast audio file (.mp3, .wav, .acc)
                             .mb-3.d-flex.flex-column.flex-lg-row.justify-content-lg-start
                                 label.form-label.mt-lg-2.mr-lg-2(for="podcast-schedule-date") Set a publish date 
-                                input#podcast-schedule-date(name="date" type="date")
+                                input#podcast-schedule-date(name="date" type="date" min=`${new Date().toISOString().substring(0,10)}`)
                                 label.form-label.mt-2.mx-lg-2(for="podcast-schedule-time") Set a time
                                 input#podcast-schedule-day(name="time" type="time")
                             .mb-3

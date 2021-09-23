@@ -132,7 +132,11 @@ async function publishPodcast (req, res) {
 app.set('view engine', 'pug')
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use([/(.*)\.rss$/, '/public'], express.static(__dirname + '/public'))
+app.use("/public/fonts", express.static(__dirname + '/public/fonts'))
+app.use("/public/images", express.static(__dirname + '/public/images'))
+app.use("/public/js", express.static(__dirname + '/public/js'))
+app.use("/public/uploads/audio", express.static(__dirname + '/public/uploads/audio'))
+app.use("/public/uploads/image", express.static(__dirname + '/public/uploads/image'))
 app.use(session(session_settings))
 
 

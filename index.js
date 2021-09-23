@@ -3,6 +3,7 @@ const express = require('express')
 const fs = require('fs')
 const app = express()
 const path = require('path')
+const fetch = require('node-fetch')
 const session = require('express-session')
 const { Podcast, Episode, Author, sequelize } = require('./models')
 const multer = require('multer')
@@ -28,7 +29,8 @@ const {
     NODE_ENV,
     PODCASTS_MYSQL_DATABASE,
     PODCASTS_MYSQL_USER,
-    PODCASTS_MYSQL_PASSWORD
+    PODCASTS_MYSQL_PASSWORD,
+    PODCASTS_GA_TRACKING_ID
 } = process.env
 
 const session_settings_dev = {
@@ -130,7 +132,7 @@ async function publishPodcast (req, res) {
 app.set('view engine', 'pug')
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(express.static('public'))
+app.use([/(.*)\.rss$/, '/public'], express.static(__dirname + '/public'))
 app.use(session(session_settings))
 
 
@@ -316,6 +318,34 @@ app.get('/signout', (req, res) => {
     res.sendStatus(200)
 })
 
+app.get(['/uploads/feeds/:feed', '/feeds/:feed'], (req, res) => {
+    const feed = req.params.feed
+    fs.readFile(path.join(__dirname, 'public', 'uploads', 'feeds', feed), (err, rss) => {
+        if (err) return res.sendStatus(404)
+        const params = {
+            // API Version.
+            v: '1',
+            // Tracking ID / Property ID.
+            tid: PODCASTS_GA_TRACKING_ID,
+            // Anonymous Client Identifier. Ideally, this should be a UUID that
+            // is associated with particular user, device, or browser instance.
+            cid: `${new Date().getTime()}|${req.headers['user-agent']}`,
+            // Event hit type.
+            t: 'rss',
+            // Event category.
+            ec: 'podcasts',
+            // Event action.
+            ea: 'request',
+            // Event label.
+            el: feed,
+            // Event value.
+            ev: req.headers.host,            
+        }
+        fetch('http://www.google-analytics.com/debug/collect', {params}).catch(console.error)
+        res.send(rss)
+    })
+})
+
 app.listen(3333, async () => {
     await sequelize.sync()
     const episodes = await Episode.findAll()
@@ -342,4 +372,3 @@ app.listen(3333, async () => {
                 })
         })
 })
-

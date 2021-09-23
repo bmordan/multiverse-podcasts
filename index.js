@@ -132,6 +132,7 @@ async function publishPodcast (req, res) {
 app.set('view engine', 'pug')
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.use(['/favicon.ico', '/manifest.json', 'mv-podcasts.css'], express.static(__dirname + '/public'))
 app.use("/fonts", express.static(__dirname + '/public/fonts'))
 app.use("/images", express.static(__dirname + '/public/images'))
 app.use("/js", express.static(__dirname + '/public/js'))

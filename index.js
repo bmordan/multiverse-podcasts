@@ -107,7 +107,7 @@ async function publishPodcast(req, res) {
         const [filename, length, type] = episode.audio.split("|")
 
         feed.addItem({
-            id: episode.id,
+            id: `${BASE_URL}/uploads/audio/${filename}`,
             title: episode.title,
             description: episode.description,
             content: episode.content,
@@ -325,11 +325,14 @@ app.get('/signout', (req, res) => {
     res.sendStatus(200)
 })
 
-app.get(['/uploads/feeds/:feed', '/feeds/:feed'], (req, res) => {
+app.get('/uploads/feeds/:feed', (req, res) => {
     const feed = req.params.feed
     fs.readFile(path.join(__dirname, 'public', 'uploads', 'feeds', feed), (err, rss) => {
         if (err) return res.sendStatus(404)
-        const payload = {
+         
+        // https://ga-dev-tools.web.app/ga4/event-builder/
+        
+         const payload = {
             "client_id": PODCASTS_GOOGLE_CLIENT_ID,
             "timestamp_micros": new Date().getTime(),
             "non_personalized_ads": true,
@@ -344,7 +347,7 @@ app.get(['/uploads/feeds/:feed', '/feeds/:feed'], (req, res) => {
                 }
             ]
         }
-        // https://ga-dev-tools.web.app/ga4/event-builder/
+       
         fetch(`https://www.google-analytics.com/mp/collect?api_secret=${PODCASTS_GOOGLE_MEASUREMENT_PROTOCOL_API_SECRET}&measurement_id=${PODCASTS_GA_TRACKING_ID}`, {
             method: 'POST',
             headers: {
@@ -352,7 +355,9 @@ app.get(['/uploads/feeds/:feed', '/feeds/:feed'], (req, res) => {
             },
             body: JSON.stringify(payload)
         }).catch(console.error)
-        res.send(rss)
+        
+        res.setHeader('content-type', 'application/rss+xml')
+        res.send(String(rss))
     })
 })
 

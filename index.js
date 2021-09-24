@@ -30,7 +30,8 @@ const {
     PODCASTS_MYSQL_DATABASE,
     PODCASTS_MYSQL_USER,
     PODCASTS_MYSQL_PASSWORD,
-    PODCASTS_GA_TRACKING_ID
+    PODCASTS_GA_TRACKING_ID,
+    PODCASTS_GOOGLE_MEASUREMENT_PROTOCOL_API_SECRET
 } = process.env
 
 const session_settings_dev = {
@@ -40,7 +41,7 @@ const session_settings_dev = {
 }
 
 const createSessionStore = () => {
-    return NODE_ENV==='production' ? new MariaDBStore({
+    return NODE_ENV === 'production' ? new MariaDBStore({
         sessionTable: 'Sessions',
         host: 'mariadb',
         database: PODCASTS_MYSQL_DATABASE,
@@ -66,16 +67,16 @@ function protect(req, res, next) {
     !req.session.user ? res.redirect('/') : next()
 }
 
-async function publishPodcast (req, res) {
+async function publishPodcast(req, res) {
     console.log(`publishPodcast: ${new Date().toISOString()} triggered`)
     const podcast = await Podcast.findByPk(req.params.id, {
         include: {
             model: Episode
         }
     })
-    
+
     const _author = await podcast.getAuthor()
-    
+
     const author = {
         name: _author.name,
         email: _author.email,
@@ -83,11 +84,11 @@ async function publishPodcast (req, res) {
     }
 
     delete podcast.AuthorId
-    
+
     const feedFileName = podcast.title.split(' ').join('-').toLowerCase()
-    
+
     const feedLinks = {
-        rss:  `${BASE_URL}/uploads/feeds/${feedFileName}.rss`,
+        rss: `${BASE_URL}/uploads/feeds/${feedFileName}.rss`,
         json: `${BASE_URL}/uploads/feeds/${feedFileName}.json`,
         atom: `${BASE_URL}/uploads/feeds/${feedFileName}.atom`
     }
@@ -120,7 +121,7 @@ async function publishPodcast (req, res) {
 
     feed.addCategory('Multiverse')
 
-    fs.writeFileSync(path.join(__dirname, 'public', 'uploads', 'feeds', `${feedFileName}.rss`),  feed.rss2())
+    fs.writeFileSync(path.join(__dirname, 'public', 'uploads', 'feeds', `${feedFileName}.rss`), feed.rss2())
     fs.writeFileSync(path.join(__dirname, 'public', 'uploads', 'feeds', `${feedFileName}.atom`), feed.atom1())
     fs.writeFileSync(path.join(__dirname, 'public', 'uploads', 'feeds', `${feedFileName}.json`), feed.json1())
 
@@ -132,7 +133,8 @@ async function publishPodcast (req, res) {
 app.set('view engine', 'pug')
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(['/favicon.ico', '/manifest.json', 'mv-podcasts.css'], express.static(__dirname + '/public'))
+app.use('/mv-podcasts.css', express.static(__dirname + '/public/mv-podcasts.css'))
+app.use('/favicon.ico', express.static(__dirname + '/public/favicon.ico'))
 app.use("/fonts", express.static(__dirname + '/public/fonts'))
 app.use("/images", express.static(__dirname + '/public/images'))
 app.use("/js", express.static(__dirname + '/public/js'))
@@ -178,7 +180,7 @@ app.post('/podcasts', [protect, uploads.single('image')], async (req, res) => {
         image: `${BASE_URL}/uploads/image/${req.file.filename}`,
         AuthorId: req.session.user.id
     })
-    await podcast.update({link: `${BASE_URL}/podcasts/${podcast.id}`})
+    await podcast.update({ link: `${BASE_URL}/podcasts/${podcast.id}` })
     res.sendStatus(201)
 })
 
@@ -187,18 +189,18 @@ app.get('/podcasts/:id/publish', protect, publishPodcast)
 app.get('/podcasts/:id', protect, async (req, res) => {
     const podcast = await Podcast.findByPk(req.params.id, {
         include: {
-            model: Episode, nested: true 
+            model: Episode, nested: true
         },
         order: [
-            [{model: Episode}, 'title', 'DESC'],
+            [{ model: Episode }, 'title', 'DESC'],
         ]
     })
     const feedFileName = podcast.title.split(' ').join('-').toLowerCase()
     let _feed;
     try {
         _feed = fs.readFileSync(path.join(__dirname, 'public', 'uploads', 'feeds', `${feedFileName}.json`))
-    } catch(err) {
-        if(err.code !== 'ENOENT') console.error(err)
+    } catch (err) {
+        if (err.code !== 'ENOENT') console.error(err)
         _feed = `{"items": []}`
     } finally {
         const feedIds = JSON.parse(_feed).items.map(item => item.id)
@@ -232,7 +234,7 @@ app.post('/podcasts/:id/edit', [protect, uploads.single('image')], async (req, r
 
 app.post('/podcasts/:id/episodes', [protect, uploads.single('audio')], async (req, res) => {
     const podcast = await Podcast.findByPk(req.params.id)
-    let publishAt = {getTime: function () {return null}}
+    let publishAt = { getTime: function () { return null } }
     if (req.body.date && req.body.time) {
         publishAt = new Date(`${req.body.date}T${req.body.time}`)
     }
@@ -246,7 +248,7 @@ app.post('/podcasts/:id/episodes', [protect, uploads.single('audio')], async (re
     })
 
     if (episode.schedule && !publishingJobs.has(`${podcast.id}-${publishAt.getTime()}`)) {
-        const job = schedule.scheduleJob(publishAt, publishPodcast.bind(this, req, {sendStatus: () => {}}))
+        const job = schedule.scheduleJob(publishAt, publishPodcast.bind(this, req, { sendStatus: () => { } }))
         publishingJobs.set(`${podcast.id}-${publishAt.getTime()}`, job)
     }
 
@@ -259,10 +261,10 @@ app.post('/podcasts/:id/episodes', [protect, uploads.single('audio')], async (re
 app.post('/podcasts/:podcast_id/episodes/:id/edit', [protect, uploads.single('audio')], async (req, res) => {
     const podcast = { id: req.params.podcast_id }
     const episode = await Episode.findByPk(req.params.id)
-    let publishAt = {getTime: function () {return null}}
-    if (episode.schedule 
-        && publishingJobs.has(`${podcast.id}-${episode.schedule}`) 
-        && req.body.date 
+    let publishAt = { getTime: function () { return null } }
+    if (episode.schedule
+        && publishingJobs.has(`${podcast.id}-${episode.schedule}`)
+        && req.body.date
         && req.body.time
         && episode.schedule > new Date().getTime()
     ) {
@@ -274,7 +276,7 @@ app.post('/podcasts/:podcast_id/episodes/:id/edit', [protect, uploads.single('au
         publishAt = new Date(`${req.body.date}T${req.body.time}`)
     }
     if (publishAt.getTime > new Date().getTime) {
-        const job = schedule.scheduleJob(publishAt, publishPodcast.bind(this, req, {sendStatus: () => {}}))
+        const job = schedule.scheduleJob(publishAt, publishPodcast.bind(this, req, { sendStatus: () => { } }))
         publishingJobs.set(`${podcast.id}-${publishAt.getTime()}`, job)
     }
     const update = {
@@ -300,7 +302,7 @@ app.get('/podcasts/:id/delete', protect, async (req, res) => {
         fs.unlinkSync(path.join(__dirname, 'public', 'uploads', 'feeds', `${feedFileName}.atom`))
         fs.unlinkSync(path.join(__dirname, 'public', 'uploads', 'feeds', `${feedFileName}.json`))
     } finally {
-        res.sendStatus(204)    
+        res.sendStatus(204)
     }
 })
 
@@ -327,26 +329,29 @@ app.get(['/uploads/feeds/:feed', '/feeds/:feed'], (req, res) => {
     const feed = req.params.feed
     fs.readFile(path.join(__dirname, 'public', 'uploads', 'feeds', feed), (err, rss) => {
         if (err) return res.sendStatus(404)
-        const params = {
-            // API Version.
-            v: '1',
-            // Tracking ID / Property ID.
-            tid: PODCASTS_GA_TRACKING_ID,
-            // Anonymous Client Identifier. Ideally, this should be a UUID that
-            // is associated with particular user, device, or browser instance.
-            cid: `${new Date().getTime()}|${req.headers['user-agent']}`,
-            // Event hit type.
-            t: 'rss',
-            // Event category.
-            ec: 'podcasts',
-            // Event action.
-            ea: 'request',
-            // Event label.
-            el: feed,
-            // Event value.
-            ev: req.headers.host,            
+        const payload = {
+            "client_id": PODCASTS_GOOGLE_CLIENT_ID,
+            "timestamp_micros": new Date().getTime(),
+            "non_personalized_ads": true,
+            "user_properties": {
+                "feed": {
+                    "value": feed
+                }
+            },
+            "events": [
+                {
+                    "name": "rss"
+                }
+            ]
         }
-        fetch('http://www.google-analytics.com/debug/collect', {params}).catch(console.error)
+        // https://ga-dev-tools.web.app/ga4/event-builder/
+        fetch(`https://www.google-analytics.com/mp/collect?api_secret=${PODCASTS_GOOGLE_MEASUREMENT_PROTOCOL_API_SECRET}&measurement_id=${PODCASTS_GA_TRACKING_ID}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        }).catch(console.error)
         res.send(rss)
     })
 })
@@ -363,7 +368,7 @@ app.listen(3333, async () => {
                 podcasts: episodes.length,
                 size: diskSpace.size,
                 free: diskSpace.free,
-                used: `${(Math.round((diskSpace.free/diskSpace.size)*100) - 100) * -1}%`
+                used: `${(Math.round((diskSpace.free / diskSpace.size) * 100) - 100) * -1}%`
             })
 
             episodes
@@ -372,7 +377,7 @@ app.listen(3333, async () => {
                 })
                 .map(async (episode) => {
                     const podcast = await Podcast.findByPk(episode.PodcastId)
-                    publishingJobs.set(`${episode.PodcastId}-${episode.schedule}`, publishPodcast.bind(this, {params: {id: podcast.id}}, {sendStatus: () => {}}))
+                    publishingJobs.set(`${episode.PodcastId}-${episode.schedule}`, publishPodcast.bind(this, { params: { id: podcast.id } }, { sendStatus: () => { } }))
                     console.info(`🟠 ${episode.PodcastId} ${new Date(episode.schedule).toLocaleString('en-GB')}`)
                 })
         })

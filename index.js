@@ -67,6 +67,40 @@ function protect(req, res, next) {
     !req.session.user ? res.redirect('/') : next()
 }
 
+function trackRSS(req, res, next) {
+    if (req.originalUrl.includes('/uploads/feeds')) {
+        const [feed] = req.originalUrl.match(/[a-z-]+\.rss/)
+        // https://ga-dev-tools.web.app/ga4/event-builder/
+
+        const payload = {
+            "client_id": PODCASTS_GOOGLE_CLIENT_ID,
+            "timestamp_micros": new Date().getTime(),
+            "non_personalized_ads": true,
+            "user_properties": {
+                "feed": {
+                    "value": feed
+                }
+            },
+            "events": [
+                {
+                    "name": "rss"
+                }
+            ]
+        }
+        
+        fetch(`https://www.google-analytics.com/mp/collect?api_secret=${PODCASTS_GOOGLE_MEASUREMENT_PROTOCOL_API_SECRET}&measurement_id=${PODCASTS_GA_TRACKING_ID}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        }).catch(console.error)
+
+        res.setHeader('content-type', 'application/rss+xml')
+    }
+    next()
+}
+
 async function publishPodcast(req, res) {
     console.log(`publishPodcast: ${new Date().toISOString()} triggered`)
     const podcast = await Podcast.findByPk(req.params.id, {
@@ -133,14 +167,9 @@ async function publishPodcast(req, res) {
 app.set('view engine', 'pug')
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use('/mv-podcasts.css', express.static(__dirname + '/public/mv-podcasts.css'))
-app.use('/favicon.ico', express.static(__dirname + '/public/favicon.ico'))
-app.use("/fonts", express.static(__dirname + '/public/fonts'))
-app.use("/images", express.static(__dirname + '/public/images'))
-app.use("/js", express.static(__dirname + '/public/js'))
-app.use("/uploads/audio", express.static(__dirname + '/public/uploads/audio'))
-app.use("/uploads/image", express.static(__dirname + '/public/uploads/image'))
+app.use(express.static(__dirname + '/public'))
 app.use(session(session_settings))
+app.use(trackRSS)
 
 
 app.get('/', (req, res) => {
@@ -323,42 +352,6 @@ app.get('/help', (req, res) => {
 app.get('/signout', (req, res) => {
     req.session.user = undefined
     res.sendStatus(200)
-})
-
-app.get('/uploads/feeds/:feed', (req, res) => {
-    const feed = req.params.feed
-    fs.readFile(path.join(__dirname, 'public', 'uploads', 'feeds', feed), (err, rss) => {
-        if (err) return res.sendStatus(404)
-         
-        // https://ga-dev-tools.web.app/ga4/event-builder/
-        
-         const payload = {
-            "client_id": PODCASTS_GOOGLE_CLIENT_ID,
-            "timestamp_micros": new Date().getTime(),
-            "non_personalized_ads": true,
-            "user_properties": {
-                "feed": {
-                    "value": feed
-                }
-            },
-            "events": [
-                {
-                    "name": "rss"
-                }
-            ]
-        }
-       
-        fetch(`https://www.google-analytics.com/mp/collect?api_secret=${PODCASTS_GOOGLE_MEASUREMENT_PROTOCOL_API_SECRET}&measurement_id=${PODCASTS_GA_TRACKING_ID}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        }).catch(console.error)
-        
-        res.setHeader('content-type', 'application/rss+xml')
-        res.send(String(rss))
-    })
 })
 
 app.listen(3333, async () => {

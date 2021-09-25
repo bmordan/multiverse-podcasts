@@ -141,7 +141,7 @@ async function publishPodcast(req, res) {
         const [filename, length, type] = episode.audio.split("|")
 
         feed.addItem({
-            id: `${BASE_URL}/uploads/audio/${filename}`,
+            id: episode.id,
             title: episode.title,
             description: episode.description,
             content: episode.content,

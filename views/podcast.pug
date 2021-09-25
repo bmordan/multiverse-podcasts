@@ -46,7 +46,7 @@ block content
         hr.mt-4
         p=podcast.description
         h3.mb-4 Episodes
-        ul#episodes.list-group(data-epids=`${JSON.stringify(podcast.Episodes.map(ep => ep.id))}`)
+        ul#episodes.list-group(data-epids=`${JSON.stringify(podcast.Episodes.map(ep => ep.title))}`)
             if podcast.Episodes.length 
                 each episode in podcast.Episodes
                     include episode.pug

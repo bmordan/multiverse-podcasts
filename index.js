@@ -232,9 +232,9 @@ app.get('/podcasts/:id', protect, async (req, res) => {
         if (err.code !== 'ENOENT') console.error(err)
         _feed = `{"items": []}`
     } finally {
-        const feedIds = JSON.parse(_feed).items.map(item => item.id)
+        const feedTitles = JSON.parse(_feed).items.map(item => item.title)
         for (const episode of podcast.Episodes) {
-            episode.status = feedIds.includes(episode.id) ? "🟢" : "🟠"
+            episode.status = feedTitles.includes(episode.title) ? "🟢" : "🟠"
             episode.status = episode.status === "🟠" && episode.schedule > new Date().getTime() ? "🕗" : episode.status
         }
         res.render('podcast', { ...defaultProps, user: req.session.user, podcast })

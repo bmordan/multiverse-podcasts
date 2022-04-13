@@ -5,28 +5,31 @@ li.list-group-item.episode(id=episode.id)
             '🟢': 'LIVE',
             '🟠': 'READY'
         }
+        const audioUrl = `/uploads/audio/${episode.audio.split('|')[0]}?ignore=true`
     article.d-md-none.d-lg-none
         h5
             span.mr-1(data-toggle="tooltip" data-placement="top" title=status[episode.status] role="button")=episode.status
+            span.mr-1.badge.badge-warning(style="transform:translate(0,-2px);font-weight:300;" data-toggle="tooltip" data-placement="top" title=`${episode.downloads} downloads` role="button")=`▼ ${episode.downloads}`
             | #{episode.title}
         p.mb-2=episode.description
             button.btn.btn-link.p-0(type="button" onclick=`toggleShowNotes("#${episode.id}-show-notes-sm")` role="button" aria-expanded="false" aria-controls=`${episode.id}-show-notes-sm` style="transform:translate(2px,-2px);") show notes.
         .collapse.bg-light.p-2.mb-2(id=`${episode.id}-show-notes-sm`)!=episode.content
-        a.d-inline-block.mb-2.w-100(href=episode.link download)
+        a.d-inline-block.mb-2.w-100(href=audioUrl download)
             button.btn.btn-warning.w-100 Download
         audio.w-100(controls)
-            source(src=episode.link type="audio/mpeg")
+            source(src=audioUrl type="audio/mpeg")
     article.d-none.d-md-flex.align-items-center
         header.flex-fill
             h5
                 span.mr-1(data-toggle="tooltip" data-placement="top" title=status[episode.status] role="button")=episode.status
+                span.mr-1.badge.badge-warning(style="transform:translate(0,-2px);font-weight:300;" data-toggle="tooltip" data-placement="top" title=`${episode.downloads} downloads` role="button")=`▼ ${episode.downloads}`
                 | #{episode.title}
             p.mb-1=episode.description
             button.btn.btn-link(type="button" onclick=`toggleShowNotes("#${episode.id}-show-notes-lg")` role="button" aria-expanded="false" aria-controls=`${episode.id}-show-notes-lg`) show notes
             .collapse.bg-light.p-2(id=`${episode.id}-show-notes-lg`)!=episode.content
         nav
-            a(href=episode.link download)
+            a(href=audioUrl download)
                 button.btn.btn-warning Download
         audio.ml-3(controls)
-            source(src=episode.link type="audio/mpeg") 
+            source(src=audioUrl type="audio/mpeg") 
     

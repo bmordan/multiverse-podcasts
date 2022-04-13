@@ -50,6 +50,47 @@ a.card:hover {
     animation-timing-function: linear;
     animation-iteration-count: infinite;
 }
+.uploading {
+    position: relative;
+    height: auto;
+}
+.uploading::after {
+    content: 'uploading...';
+    width: 100%;
+    position:absolute;
+    top: 22%;
+    text-align: center;
+}
+.uploading section, .uploading #preview.card {
+    opacity: 0.1;
+}
+.uploading .uploading-bar {
+    position: absolute;
+    z-index: 1000;
+    top: 25%;
+    width: 0px;
+    height: 1rem;
+    border-radius: 2px;
+    animation: progress 13s infinite linear;    
+}
+@keyframes progress {
+    0%{
+      width: 0%;
+    }
+    25%{
+        width: 50%;
+    }
+    50%{
+        width: 75%;
+    }
+    75%{
+        width: 85%;
+    }
+    100%{
+        width: 100%;
+    }
+};
+
 @keyframes ticker {
     0% {transform: translate(300px)}
     100% {transform: translate(-900px)}

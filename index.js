@@ -3,22 +3,21 @@ const express = require('express')
 const fs = require('fs')
 const app = express()
 const path = require('path')
-const fetch = require('node-fetch')
 const session = require('express-session')
-const { Podcast, Episode, Author, sequelize } = require('./models')
+const { Podcast, Episode, Author, Download, sequelize } = require('./models')
+const { Op } = require('sequelize')
 const multer = require('multer')
 const getGoogleUser = require('./lib/getGoogleUser')
 const pug = require('pug')
 const { Feed } = require('feed')
 const checkDiscSpace = require('check-disk-space')
 const MariaDBStore = require('express-session-mariadb-store')
-const { file } = require('googleapis/build/src/apis/file')
 const schedule = require('node-schedule')
 const storage = multer.diskStorage({
-    destination: (req, fileData, next) => {
+    destination: (_, fileData, next) => {
         next(null, path.join(__dirname, 'public', 'uploads', fileData.fieldname))
     },
-    filename: (req, fileData, next) => {
+    filename: (_, fileData, next) => {
         next(null, new Date().getTime() + path.extname(fileData.originalname))
     }
 })
@@ -29,9 +28,7 @@ const {
     NODE_ENV,
     PODCASTS_MYSQL_DATABASE,
     PODCASTS_MYSQL_USER,
-    PODCASTS_MYSQL_PASSWORD,
-    PODCASTS_GA_TRACKING_ID,
-    PODCASTS_GOOGLE_MEASUREMENT_PROTOCOL_API_SECRET
+    PODCASTS_MYSQL_PASSWORD
 } = process.env
 
 const session_settings_dev = {
@@ -56,47 +53,25 @@ const session_settings_production = {
 }
 
 const session_settings = NODE_ENV === 'production' ? session_settings_production : session_settings_dev
-
 const publishingJobs = new Map()
-
 const uploads = multer({ storage })
-
 const defaultProps = { client_id: PODCASTS_GOOGLE_CLIENT_ID, version }
 
 function protect(req, res, next) {
     !req.session.user ? res.redirect('/') : next()
 }
 
-function trackRSS(req, res, next) {
-    if (req.originalUrl.includes('/uploads/feeds')) {
-        const [feed] = req.originalUrl.match(/[a-z-]+\.rss/)
-        // https://ga-dev-tools.web.app/ga4/event-builder/
-
-        const payload = {
-            "client_id": PODCASTS_GOOGLE_CLIENT_ID,
-            "timestamp_micros": new Date().getTime(),
-            "non_personalized_ads": true,
-            "user_properties": {
-                "feed": {
-                    "value": feed
+async function trackRSS(req, _, next) {
+    if (req.originalUrl.includes('/uploads/audio') && !req.query.ignore) {
+        const [mp3] = req.originalUrl.match(/[\d]+\.mp3/)
+        const episode = await Episode.findOne({
+            where: {
+                audio: {
+                    [Op.like]: `${mp3}%`
                 }
-            },
-            "events": [
-                {
-                    "name": "rss"
-                }
-            ]
-        }
-        
-        fetch(`https://www.google-analytics.com/mp/collect?api_secret=${PODCASTS_GOOGLE_MEASUREMENT_PROTOCOL_API_SECRET}&measurement_id=${PODCASTS_GA_TRACKING_ID}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        }).catch(console.error)
-
-        res.setHeader('content-type', 'application/rss+xml')
+            }
+        })
+        await Download.create({EpisodeId: episode.id})
     }
     next()
 }
@@ -145,6 +120,7 @@ async function publishPodcast(req, res) {
             title: episode.title,
             description: episode.description,
             content: episode.content,
+            link: `${BASE_URL}/uploads/audio/${filename}`,
             date: episode.createdAt,
             audio: { url: `${BASE_URL}/uploads/audio/${filename}`, length, type },
             author: [author],
@@ -167,9 +143,9 @@ async function publishPodcast(req, res) {
 app.set('view engine', 'pug')
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.use(trackRSS)
 app.use(express.static(__dirname + '/public'))
 app.use(session(session_settings))
-app.use(trackRSS)
 
 
 app.get('/', (req, res) => {
@@ -236,6 +212,12 @@ app.get('/podcasts/:id', protect, async (req, res) => {
         for (const episode of podcast.Episodes) {
             episode.status = feedTitles.includes(episode.title) ? "🟢" : "🟠"
             episode.status = episode.status === "🟠" && episode.schedule > new Date().getTime() ? "🕗" : episode.status
+
+            episode.downloads = await Download.count({
+                where: {
+                    EpisodeId: episode.id
+                }
+            }) / 2
         }
         res.render('podcast', { ...defaultProps, user: req.session.user, podcast })
     }

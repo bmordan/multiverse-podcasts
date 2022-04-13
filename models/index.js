@@ -1,3 +1,4 @@
+const { download } = require('express/lib/response')
 const { Model, DataTypes, Sequelize } = require('sequelize')
 const {
     NODE_ENV,
@@ -34,7 +35,7 @@ class Episode extends Model{}
 class FeedLink extends Model{}
 class Author extends Model{}
 class Session extends Model{}
-class Publish extends Model{}
+class Download extends Model{}
 
 Session.init({
     sid:{
@@ -109,6 +110,8 @@ Episode.init({
     schedule: DataTypes.INTEGER
 }, {sequelize})
 
+Download.init({}, {sequelize})
+
 Author.init({
     gid: DataTypes.STRING,
     name: DataTypes.STRING,
@@ -119,8 +122,8 @@ Author.init({
 Podcast.hasMany(Episode)
 Episode.belongsTo(Podcast)
 Author.hasOne(Podcast)
-Episode.hasMany(FeedLink)
-FeedLink.belongsTo(Episode)
+Episode.hasMany(Download)
+Download.belongsTo(Episode)
 Podcast.belongsTo(Author)
 
 module.exports = {
@@ -129,6 +132,7 @@ module.exports = {
     Author,
     Podcast,
     Episode,
+    Download,
     FeedLink,
     sequelize
 }

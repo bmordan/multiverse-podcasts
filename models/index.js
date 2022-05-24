@@ -110,7 +110,9 @@ Episode.init({
     schedule: DataTypes.INTEGER
 }, {sequelize})
 
-Download.init({}, {sequelize})
+Download.init({
+    referer: DataTypes.STRING
+}, {sequelize})
 
 Author.init({
     gid: DataTypes.STRING,

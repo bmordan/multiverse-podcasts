@@ -71,7 +71,9 @@ async function trackRSS(req, _, next) {
                 }
             }
         })
-        await Download.create({EpisodeId: episode.id})
+        if (episode) {
+            await Download.create({referer: req.originalUrl, EpisodeId: episode.id})
+        }
     }
     next()
 }
@@ -249,6 +251,9 @@ app.post('/podcasts/:id/episodes', [protect, uploads.single('audio')], async (re
     if (req.body.date && req.body.time) {
         publishAt = new Date(`${req.body.date}T${req.body.time}`)
     }
+    // check the file info
+    console.log(req.file)
+    // some episodes are being saved as [object Object]
     const episode = await podcast.createEpisode({
         title: req.body.title,
         description: req.body.description,

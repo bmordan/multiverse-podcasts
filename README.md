@@ -18,6 +18,6 @@ GRANT ALL privileges ON `mydb`.* TO 'myuser'@localhost;
 ```
 Body size Nginx
 ```
-etc/nginx/conf.d/client_max_body_size.conf
+/etc/nginx/conf.d/client_max_body_size.conf
 client_max_body_size 1g;
 ```
